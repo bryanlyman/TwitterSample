@@ -23,6 +23,8 @@ namespace TwitterSample
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //Dependency Injection
             builder.Services.AddSingleton<ISampleService<RedditService>>(ServiceFactory.GetService(eServiceType.Reddit) as ISampleService<RedditService>);
         }
 

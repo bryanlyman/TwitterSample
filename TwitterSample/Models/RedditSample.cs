@@ -5,7 +5,7 @@ namespace TwitterSample.Models
 {
 	public class RedditSample : ISample
 	{
-		private static Regex _rxHashTags = new Regex("#[^;]+$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
+		private static Regex _rxHashTags = new Regex(@"(^|\B)#(?!([x]{1}|[0-9_])+[^; ]{1}\b)(([a-zA-Z0-9_]){1,30})(\b|\r)", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
 
 		public RedditSample() { }
 

@@ -10,6 +10,11 @@ namespace Frontend.Pages
 {
 	public class HostModel : PageModel
 	{
+
+		public static SortedList<HashTagKey, string> HashTagRanks = new SortedList<HashTagKey, string>();
+		public static int GrandTotal = 0;
+		private int _pollSampleInterval = 500; //millisecond between sample requests
+
 		public class HashTagKey : IComparable<HashTagKey>
 		{
 			public int Occurs { get; set; }
@@ -40,8 +45,6 @@ namespace Frontend.Pages
 			}
 		}
 
-		public static SortedList<HashTagKey, string> HashTagRanks = new SortedList<HashTagKey, string>();
-		public static int GrandTotal = 0;
 		public override void OnPageHandlerExecuted(PageHandlerExecutedContext context)
 		{
 			base.OnPageHandlerExecuted(context);
@@ -71,7 +74,7 @@ namespace Frontend.Pages
 							ProcessSocketData(samples);
 						}
 					}
-					Thread.Sleep(1000);
+					Thread.Sleep(_pollSampleInterval);
 				}
 			});
 			thread.Start();
@@ -171,7 +174,7 @@ namespace Frontend.Pages
 		private async void UpdateComponents()
 		{
 			Frontend.Pages.Index.CurrentCount = GrandTotal;
-
+			Frontend.Pages.Index.RanksReference = HashTagRanks;
 		}
 
 

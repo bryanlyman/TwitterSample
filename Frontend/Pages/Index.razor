@@ -1,33 +1,105 @@
 ﻿@page "/"
 @using Frontend.Pages;
+@using Radzen;
+@using Radzen.Blazor;
+@using Radzen.Blazor.Rendering;
 
 <PageTitle>Home</PageTitle>
 
-<p role="status">Current count: @count</p>
+<h3>Live Feed</h3>
+
+<p>Originally this application was written to attach to a <b>Twitter</b> sample feed of new posts and display a count of samples as well as the ranking top ten hash tags encountered.
+I applied for a <b>Twitter</b> API key, but with the changes in the corporation happening right now, I wasn't able to receive one. So instead I attached to the <b>Reddit</b> API and sampled all incoming posts.
+There isn't really an equivalent hash tag system on <b>Reddit</b>, so instead I substituted sub-Reddit catategories as well as any hash tags found within text posts.
+The feed quantity of <b>Reddit</b> is also smaller than that of <b>Twitter</b>, but it is sufficient for the purposes of this demonstration.</p>
+
+<p>The <b>Twitter</b> API uses a socket stream to push a large quantity of posts though its sample endpoint, rather than requiring you to poll the endpoint for samples.
+The <b>Reddit</b> API does not have a sstreaming endpoint, but for consistency in how my interfaces were originally written, I provided a sample stream server which is the equivalent of <b>Twitter's</b>.
+*<i>Click</i>* the <span style="background-color:rgba(50,30,5,0.2)">API Reference</span> link on the left, to view these REST endpoints.</p>
+
+<p><h5>Below are realtime updates of how many total samples have been processed from <b>Reddit</b> and the top ten ranked hash tags, which are promoted as they are compared to all the available hash tags sampled from the current post stream.</h5></p>
+
+<p role="status">Total posts: @CurrentCount</p>
+
+<RadzenRow>
+	<RadzenColumn Size="6">
+		<RadzenDataGrid @ref="RankGrid" Data="@HashTagRanks" TItem="HashTagRank" Density="@Density" AllowPaging="false" AllowSorting="false" >
+			<Columns>
+				<RadzenDataGridColumn TItem="HashTagRank" Property="Rank" Title="Rank" />
+				<RadzenDataGridColumn TItem="HashTagRank" Property="HashTag" Title="HashTag/SubReddit" />
+				<RadzenDataGridColumn TItem="HashTagRank" Property="Mentions" Title="Mentioned" />
+			</Columns>
+		</RadzenDataGrid>
+	</RadzenColumn>
+
+	<RadzenColumn Size="6">
+	</RadzenColumn>
+
+</RadzenRow>
+
 
 
 @code {
-	public int count = 0;
+	Density Density = Density.Compact;
+	bool ShowDataLabels = true;
 
 	public static int CurrentCount { get; set; }
+	public static SortedList<HostModel.HashTagKey, string> RanksReference { get; set; }
+
+	bool ShowSeriesLabels { get; set; } = true;
+
+	class HashTagRank
+	{
+		public string? Rank { get; set; }
+		public string? HashTag { get; set; }
+		public int Mentions { get; set; }
+	}
+
+	List<HashTagRank>? HashTagRanks = new List<HashTagRank>();
+
+	RadzenDataGrid<HashTagRank>? RankGrid;
+	RadzenPieSeries<HashTagRank>? RankChart;
 
 	protected override void OnInitialized()
 	{
+
 		base.OnInitialized();
-		Go();
+		StartRefreshTimer();
 	}
 
-	private void Go()
+	private void StartRefreshTimer()
 	{
-		Task.Run(() =>
+		Task.Run(async () =>
 		{
 			while (true)
 			{
-				count = CurrentCount;
-				Task.Delay(1000).Wait();
+				ProcessChanges();
+				await InvokeAsync(() => StateHasChanged()).ConfigureAwait(false);
+				await Task.Delay(1000);
 			}
 		});
 	}
 
+	private bool _processlatch = false;
+	private void ProcessChanges()
+	{
+		if (_processlatch) return;
+		_processlatch = true;
+
+		HashTagRanks.Clear();
+		var ranks = RanksReference;
+		if (ranks?.Count > 0)
+			for(var i =0; i < 10; i++)
+			{
+				if (ranks.Count > i)
+				{
+					var rank = ranks.GetKeyAtIndex(i);
+					HashTagRanks.Add(new HashTagRank { Rank = $"#{i+1}", HashTag = rank.Value, Mentions = rank.Occurs });
+				}
+			}
+
+		RankGrid?.Reload();
+		_processlatch = false;
+	}
 
 }
