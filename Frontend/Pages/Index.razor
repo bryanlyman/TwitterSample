@@ -14,7 +14,7 @@ There isn't really an equivalent hash tag system on <b>Reddit</b>, so instead I 
 The feed quantity of <b>Reddit</b> is also smaller than that of <b>Twitter</b>, but it is sufficient for the purposes of this demonstration.</p>
 
 <p>The <b>Twitter</b> API uses a socket stream to push a large quantity of posts though its sample endpoint, rather than requiring you to poll the endpoint for samples.
-The <b>Reddit</b> API does not have a sstreaming endpoint, but for consistency in how my interfaces were originally written, I provided a sample stream server which is the equivalent of <b>Twitter's</b>.
+The <b>Reddit</b> API does not have a streaming endpoint, but for consistency in how my interfaces were originally written, I provided a sample stream server which is the equivalent of <b>Twitter's</b>.
 *<i>Click</i>* the <span style="background-color:rgba(50,30,5,0.2)">API Reference</span> link on the left, to view these REST endpoints.
 All rank information is stored in memory as a collection sorted by how many times the hash tag is mentioned. In order to rank them properly, all hash tags are persisted as comparative information.
 In order to reduce the amount of memory used, I minimized the amount of persisted data; this would also be useful for optimization if the data were to be stored for later comparison in a database.</p>
