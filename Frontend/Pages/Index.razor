@@ -1,0 +1,33 @@
+﻿@page "/"
+@using Frontend.Pages;
+
+<PageTitle>Home</PageTitle>
+
+<p role="status">Current count: @count</p>
+
+
+@code {
+	public int count = 0;
+
+	public static int CurrentCount { get; set; }
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		Go();
+	}
+
+	private void Go()
+	{
+		Task.Run(() =>
+		{
+			while (true)
+			{
+				count = CurrentCount;
+				Task.Delay(1000).Wait();
+			}
+		});
+	}
+
+
+}

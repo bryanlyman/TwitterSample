@@ -3,6 +3,10 @@
 ################################################################################
 
 /.vs
-/TwitterSample/obj
 *.user
-/TwitterSample/bin/Debug/net7.0
+/TwitterSample/obj
+/TwitterSample/bin
+/UnitTests/obj
+/UnitTests/bin
+/Frontend/obj
+/Frontend/bin
