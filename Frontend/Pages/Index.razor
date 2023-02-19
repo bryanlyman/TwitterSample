@@ -24,8 +24,8 @@ In order to reduce the amount of memory used, I minimized the amount of persiste
 <p role="status">Total posts: @CurrentCount</p>
 
 <RadzenRow>
-	<RadzenColumn Size="6">
-		<RadzenDataGrid @ref="RankGrid" Data="@HashTagRanks" TItem="HashTagRank" Density="@Density" AllowPaging="false" AllowSorting="false" >
+	<RadzenColumn Size="5">
+		<RadzenDataGrid @ref="RankGrid" Data="@HashTagRanks" TItem="HashTagRank" Density="Density.Compact" AllowPaging="false" AllowSorting="false">
 			<Columns>
 				<RadzenDataGridColumn TItem="HashTagRank" Property="Rank" Title="Rank" />
 				<RadzenDataGridColumn TItem="HashTagRank" Property="HashTag" Title="HashTag/SubReddit" />
@@ -34,7 +34,14 @@ In order to reduce the amount of memory used, I minimized the amount of persiste
 		</RadzenDataGrid>
 	</RadzenColumn>
 
-	<RadzenColumn Size="6">
+	<RadzenColumn Size="7">
+		<RadzenChart>
+			<RadzenDonutSeries @ref="RankChart" Data="@HashTagRanks" CategoryProperty="HashTag" ValueProperty="Mentions">
+				<ChildContent>
+					<RadzenSeriesDataLabels Visible="true" />
+				</ChildContent>
+			</RadzenDonutSeries>
+		</RadzenChart>
 	</RadzenColumn>
 
 </RadzenRow>
@@ -42,25 +49,21 @@ In order to reduce the amount of memory used, I minimized the amount of persiste
 
 
 @code {
-	Density Density = Density.Compact;
-	bool ShowDataLabels = true;
 
 	public static int CurrentCount { get; set; }
 	public static SortedList<HostModel.HashTagKey, string> RanksReference { get; set; }
 
-	bool ShowSeriesLabels { get; set; } = true;
-
 	class HashTagRank
 	{
 		public string? Rank { get; set; }
-		public string? HashTag { get; set; }
 		public int Mentions { get; set; }
+		public string? HashTag { get; set; }
 	}
 
 	List<HashTagRank>? HashTagRanks = new List<HashTagRank>();
 
 	RadzenDataGrid<HashTagRank>? RankGrid;
-	RadzenPieSeries<HashTagRank>? RankChart;
+	RadzenDonutSeries<HashTagRank>? RankChart;
 
 	protected override void OnInitialized()
 	{
@@ -101,6 +104,8 @@ In order to reduce the amount of memory used, I minimized the amount of persiste
 			}
 
 		RankGrid?.Reload();
+		RankChart?.RenderLegendItem();
+		RankChart?.Chart?.Reload();
 		_processlatch = false;
 	}
 
