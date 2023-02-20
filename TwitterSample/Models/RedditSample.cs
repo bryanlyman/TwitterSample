@@ -5,8 +5,6 @@ namespace TwitterSample.Models
 {
 	public class RedditSample : ISample
 	{
-		private static Regex _rxHashTags = new Regex(@"(^|\B)#(?!([x]{1}|[0-9_])+[^; ]{1}\b)(([a-zA-Z0-9_]){1,30})(\b|\r)", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
-
 		public RedditSample() { }
 
 		public RedditSample(JsonNode child)
@@ -17,7 +15,7 @@ namespace TwitterSample.Models
 			var selfText = child?["data"]?["selftext"]?.ToString() ?? "";
 			if (selfText != string.Empty)
 			{
-				var matches = _rxHashTags.Matches(selfText);
+				var matches = ISample.RXHashTags.Matches(selfText);
 				if (matches.Count > 0) foreach (Match match in matches) HashTags.Add(match.Value);
 			}
 
@@ -32,7 +30,7 @@ namespace TwitterSample.Models
 				var cSelfText = post?["selftext"]?.ToString() ?? "";
 				if (cSelfText != string.Empty)
 				{
-					var matches = _rxHashTags.Matches(cSelfText);
+					var matches = ISample.RXHashTags.Matches(cSelfText);
 					if (matches.Count > 0) foreach (Match match in matches) HashTags.Add(match.Value);
 				}
 			}
