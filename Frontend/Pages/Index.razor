@@ -6,8 +6,6 @@
 
 <PageTitle>Home</PageTitle>
 
-<h3>Live Feed</h3>
-
 <p>Originally this application was written to attach to a <b>Twitter</b> sample feed of new posts and display a count of samples as well as the ranking top ten hash tags encountered.
 I applied for a <b>Twitter</b> API key, but with the changes in the corporation happening right now, I wasn't able to receive one. So instead I attached to the <b>Reddit</b> API and sampled all incoming posts.
 There isn't really an equivalent hash tag system on <b>Reddit</b>, so instead I substituted sub-Reddit catategories as well as any hash tags found within text posts.
@@ -19,9 +17,9 @@ The <b>Reddit</b> API does not have a streaming endpoint, but for consistency in
 All rank information is stored in memory as a collection sorted by how many times the hash tag is mentioned. In order to rank them properly, all hash tags are persisted as comparative information.
 In order to reduce the amount of memory used, I minimized the amount of persisted data; this would also be useful for optimization if the data were to be stored for later comparison in a database.</p>
 
-<p><h6>Below are realtime updates of how many total samples have been processed from <b>Reddit</b> and the top ten ranked hash tags, which are promoted as they are compared to all the available hash tags sampled from the current post stream.</h6></p>
+<p>Below are realtime updates of how many total samples have been processed from <b>Reddit</b> and the top ten ranked hash tags, which are promoted as they are compared to all the available hash tags sampled from the current post stream.</p>
 
-<p role="status">Total posts: @CurrentCount</p>
+<h5 role="status">Total posts: @CurrentCount</h5>
 
 <RadzenRow>
 	<RadzenColumn Size="5">
@@ -67,7 +65,7 @@ In order to reduce the amount of memory used, I minimized the amount of persiste
 
 	protected override void OnInitialized()
 	{
-
+		MainLayout.HeaderTitle = "Live Feed";
 		base.OnInitialized();
 		StartRefreshTimer();
 	}

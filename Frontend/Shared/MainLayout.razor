@@ -8,8 +8,8 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <span></span>
+        <div class="top-row px-4" style="justify-content: safe center;">
+            <h4>@HeaderTitle</h4>
         </div>
 
         <article class="content px-4">
@@ -17,3 +17,8 @@
         </article>
     </main>
 </div>
+
+@code {
+    [Parameter]
+    public static string HeaderTitle { get; set; }
+}
